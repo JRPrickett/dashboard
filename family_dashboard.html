@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .time {
+            font-size: 3em;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .date {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+
+        .widget {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .widget h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .calendar-container {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .calendar-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .info-icon {
+            font-size: 2em;
+            min-width: 50px;
+        }
+
+        .info-content h4 {
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .info-content p {
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+
+        .footer {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .weather {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .camera-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .camera-placeholder {
+            text-align: center;
+            opacity: 0.7;
+        }
+
+        /* Meal plan styling */
+        .meal-plan {
+            display: grid;
+            gap: 8px;
+        }
+
+        .meal-day {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+
+        .meal-day strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .time {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <div class="time" id="current-time">00:00</div>
+            <div class="date" id="current-date">Loading...</div>
+        </div>
+
+        <div class="widget">
+            <h3>📅 Family Calendar</h3>
+            <div class="calendar-container">
+                <!-- Replace with your Google Calendar embed URL -->
+                <iframe class="calendar-embed" 
+                        src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=Europe%2FLondon&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&mode=AGENDA"
+                        frameborder="0" 
+                        scrolling="no">
+                </iframe>
+                <!-- Alternative: Manual calendar events -->
+                <div style="display: none;" id="manual-calendar">
+                    <div class="info-item">
+                        <div class="info-icon">📋</div>
+                        <div class="info-content">
+                            <h4>Team Meeting</h4>
+                            <p>Today, 2:00 PM</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🏥</div>
+                        <div class="info-content">
+                            <h4>Doctor Appointment</h4>
+                            <p>Tomorrow, 10:30 AM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget">
+            <h3>🏠 Home Info</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-icon">🗑️</div>
+                    <div class="info-content">
+                        <h4>Bin Collection</h4>
+                        <p id="bin-day">Tomorrow - General Waste</p>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">🍽️</div>
+                    <div class="info-content">
+                        <h4>Today's Meal</h4>
+                        <p id="today-meal">Spaghetti Bolognese</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">🌡️</div>
+                    <div class="info-content">
+                        <h4>Weather</h4>
+                        <p id="weather-info">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- Camera Feed -->
+                <div style="grid-column: 1 / -1;">
+                    <h4 style="margin-bottom: 10px;">📷 Front Door</h4>
+                    <div class="camera-container">
+                        <!-- Replace with your RTSP stream or camera widget -->
+                        <div class="camera-placeholder">
+                            <p>Camera feed will appear here</p>
+                            <p style="font-size: 0.8em; margin-top: 5px;">Configure your Tapo RTSP URL</p>
+                        </div>
+                        <!-- For RTSP, you might use something like:
+                        <video width="100%" height="100%" autoplay muted>
+                            <source src="rtsp://your-camera-ip:554/stream" type="video/mp4">
+                        </video>
+                        -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="weather">
+                <h3>📍 This Week's Meal Plan</h3>
+            </div>
+            <div class="meal-plan" id="meal-plan">
+                <div class="meal-day"><strong>Monday:</strong> Chicken Tikka Masala</div>
+                <div class="meal-day"><strong>Tuesday:</strong> Spaghetti Bolognese</div>
+                <div class="meal-day"><strong>Wednesday:</strong> Fish & Chips</div>
+                <div class="meal-day"><strong>Thursday:</strong> Vegetable Stir Fry</div>
+                <div class="meal-day"><strong>Friday:</strong> Pizza Night</div>
+                <div class="meal-day"><strong>Saturday:</strong> Roast Dinner</div>
+                <div class="meal-day"><strong>Sunday:</strong> Leftover Buffet</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update time and date
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-GB', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            const dateString = now.toLocaleDateString('en-GB', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            document.getElementById('current-time').textContent = timeString;
+            document.getElementById('current-date').textContent = dateString;
+        }
+
+        // Bin collection rotation (example logic)
+        function updateBinDay() {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const binTypes = ['General Waste', 'Recycling', 'Garden Waste'];
+            const today = new Date().getDay();
+            const binDay = document.getElementById('bin-day');
+            
+            // Simple example: bins collected on Wednesdays, rotate type each week
+            if (today === 2) { // Tuesday
+                const weekNumber = Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 7));
+                const binType = binTypes[weekNumber % binTypes.length];
+                binDay.textContent = `Tomorrow - ${binType}`;
+                binDay.parentElement.parentElement.style.background = 'rgba(255, 165, 0, 0.3)'; // Orange highlight
+            } else if (today === 3) { // Wednesday
+                binDay.textContent = 'Today - Collection Day!';
+                binDay.parentElement.parentElement.style.background = 'rgba(255, 0, 0, 0.3)'; // Red highlight
+            } else {
+                const daysUntilWednesday = (3 - today + 7) % 7 || 7;
+                binDay.textContent = `In ${daysUntilWednesday} days - General Waste`;
+            }
+        }
+
+        // Simple weather (you'd want to replace this with a real weather API)
+        function updateWeather() {
+            // This is just a placeholder - you'd integrate with a weather API
+            const weather = document.getElementById('weather-info');
+            weather.textContent = '18°C, Partly Cloudy';
+        }
+
+        // Meal plan for today
+        function updateTodayMeal() {
+            const meals = {
+                0: 'Leftover Buffet', // Sunday
+                1: 'Chicken Tikka Masala', // Monday
+                2: 'Spaghetti Bolognese', // Tuesday
+                3: 'Fish & Chips', // Wednesday
+                4: 'Vegetable Stir Fry', // Thursday
+                5: 'Pizza Night', // Friday
+                6: 'Roast Dinner' // Saturday
+            };
+            
+            const today = new Date().getDay();
+            const todayMeal = document.getElementById('today-meal');
+            todayMeal.textContent = meals[today] || 'Check meal plan';
+        }
+
+        // Initialize and set up intervals
+        updateTime();
+        updateBinDay();
+        updateWeather();
+        updateTodayMeal();
+        
+        setInterval(updateTime, 1000); // Update every second
+        setInterval(updateBinDay, 3600000); // Update every hour
+        setInterval(updateWeather, 1800000); // Update every 30 minutes
+    </script>
+</body>
+</html>
