@@ -389,7 +389,7 @@
             <button class="fullscreen-close" onclick="closeFullscreen()">&times;</button>
             <h2 style="margin-bottom: 20px; text-align: center;">📅 Family Calendar</h2>
             <div class="fullscreen-calendar">
-                <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=Europe%2FLondon&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&mode=MONTH"
+                <iframe src=https://calendar.google.com/calendar/u/0?cid=amFzb25ycHJpY2tldHRAZ21haWwuY29t"
                         frameborder="0" scrolling="no"></iframe>
             </div>
         </div>
@@ -529,7 +529,7 @@
         async function updateMealsFromGoogleSheets() {
             // Replace 'YOUR_SHEET_ID' with your actual Google Sheet ID
             const SHEET_ID = 'YOUR_SHEET_ID';
-            const RANGE = 'Sheet1!A:B'; // Assumes Date in column A, Dinner in column B
+            const RANGE = 'Sheet1!A:F'; // Assumes Date in column A, Dinner in column B
             const API_KEY = 'YOUR_GOOGLE_SHEETS_API_KEY';
             
             try {
