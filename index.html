@@ -480,7 +480,7 @@
             // Calculate which week we're in (to determine if it's general waste week)
             const startOfYear = new Date(today.getFullYear(), 0, 1);
             const weekNumber = Math.ceil(((today - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
-            const isGeneralWasteWeek = weekNumber % 2 === 1; // Odd weeks = general waste + recycling
+            const isGeneralWasteWeek = weekNumber % 2 === 0; // Even weeks = general waste + recycling
             
             if (dayOfWeek === 5) { // Today is Friday - collection day!
                 if (isGeneralWasteWeek) {
