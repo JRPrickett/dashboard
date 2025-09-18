@@ -137,6 +137,99 @@
         .camera-placeholder {
             text-align: center;
             opacity: 0.7;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .camera-placeholder:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clickable:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            transform: scale(1.02);
+        }
+
+        /* Full screen overlay */
+        .fullscreen-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .fullscreen-overlay.active {
+            display: flex;
+        }
+
+        .fullscreen-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            overflow: auto;
+        }
+
+        .fullscreen-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .fullscreen-close:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        .fullscreen-camera {
+            width: 100%;
+            height: 70vh;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .fullscreen-calendar {
+            width: 85vw;
+            height: 80vh;
+        }
+
+        .fullscreen-calendar iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
         }
 
         /* Meal plan styling */
@@ -179,10 +272,10 @@
 
         <div class="widget">
             <h3>📅 Family Calendar</h3>
-            <div class="calendar-container">
+            <div class="calendar-container clickable" onclick="openFullscreen('calendar')">
                 <!-- Replace with your Google Calendar embed URL -->
                 <iframe class="calendar-embed" 
-                        src="https://calendar.google.com/calendar/embed?src=jasonrprickett%40gmail.com&ctz=Pacific%2FAuckland"
+                        src="https://calendar.google.com/calendar/u/0?cid=amFzb25ycHJpY2tldHRAZ21haWwuY29t"
                         frameborder="0" 
                         scrolling="no">
                 </iframe>
@@ -233,18 +326,17 @@
                     </div>
                 </div>
 
-                <!-- Camera Feed -->
                 <div style="grid-column: 1 / -1;">
                     <h4 style="margin-bottom: 10px;">📷 Front Door</h4>
-                    <div class="camera-container">
+                    <div class="camera-container clickable" onclick="openFullscreen('camera')">
                         <!-- Replace with your RTSP stream or camera widget -->
                         <div class="camera-placeholder">
-                            <p>Camera feed will appear here</p>
+                            <p>🎥 Click to view camera full screen</p>
                             <p style="font-size: 0.8em; margin-top: 5px;">Configure your Tapo RTSP URL</p>
                         </div>
                         <!-- For RTSP, you might use something like:
                         <video width="100%" height="100%" autoplay muted>
-                            <source src="rtsp://192.168.1.68:554/stream" type="video/mp4">
+                            <source src="rtsp://192.168.1.68:554/stream1" type="video/mp4">
                         </video>
                         -->
                     </div>
@@ -256,7 +348,7 @@
             <div class="weather">
                 <h3>📍 This Week's Meal Plan</h3>
             </div>
-            <div class="meal-plan" id="meal-plan">
+            <div class="meal-plan clickable" id="meal-plan" onclick="openFullscreen('meals')">
                 <div class="meal-day"><strong>Monday:</strong> Chicken Tikka Masala</div>
                 <div class="meal-day"><strong>Tuesday:</strong> Spaghetti Bolognese</div>
                 <div class="meal-day"><strong>Wednesday:</strong> Fish & Chips</div>
@@ -268,6 +360,85 @@
         </div>
     </div>
 
+    <!-- Full screen overlays -->
+    <div class="fullscreen-overlay" id="fullscreen-camera">
+        <div class="fullscreen-content">
+            <button class="fullscreen-close" onclick="closeFullscreen()">&times;</button>
+            <h2 style="margin-bottom: 20px; text-align: center;">📷 Front Door Camera</h2>
+            <div class="fullscreen-camera">
+                <div>
+                    <p style="font-size: 1.5em; margin-bottom: 10px;">🎥 Camera Feed</p>
+                    <p>Replace this with your Tapo RTSP stream</p>
+                    <p style="font-size: 0.9em; margin-top: 15px; opacity: 0.7;">
+                        Example: &lt;video autoplay muted controls&gt;<br>
+                        &lt;source src="rtsp://camera-ip:554/stream"&gt;<br>
+                        &lt;/video&gt;
+                    </p>
+                </div>
+                <!-- Replace with actual camera stream:
+                <video width="100%" height="100%" autoplay muted controls>
+                    <source src="rtsp://your-camera-ip:554/stream" type="video/mp4">
+                </video>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <div class="fullscreen-overlay" id="fullscreen-calendar">
+        <div class="fullscreen-content">
+            <button class="fullscreen-close" onclick="closeFullscreen()">&times;</button>
+            <h2 style="margin-bottom: 20px; text-align: center;">📅 Family Calendar</h2>
+            <div class="fullscreen-calendar">
+                <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=Europe%2FLondon&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&mode=MONTH"
+                        frameborder="0" scrolling="no"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="fullscreen-overlay" id="fullscreen-meals">
+        <div class="fullscreen-content">
+            <button class="fullscreen-close" onclick="closeFullscreen()">&times;</button>
+            <h2 style="margin-bottom: 20px; text-align: center;">🍽️ Weekly Meal Plan</h2>
+            <div style="display: grid; gap: 15px; max-width: 600px;">
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px;">
+                    <h3 style="margin-bottom: 10px;">Monday - Chicken Tikka Masala</h3>
+                    <p>🛒 Shopping: Chicken, yogurt, tomatoes, spices</p>
+                    <p>⏱️ Prep time: 30 minutes</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px;">
+                    <h3 style="margin-bottom: 10px;">Tuesday - Spaghetti Bolognese</h3>
+                    <p>🛒 Shopping: Mince, pasta, onions, carrots</p>
+                    <p>⏱️ Prep time: 45 minutes</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px;">
+                    <h3 style="margin-bottom: 10px;">Wednesday - Fish & Chips</h3>
+                    <p>🛒 Shopping: White fish, potatoes, peas</p>
+                    <p>⏱️ Prep time: 25 minutes</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px;">
+                    <h3 style="margin-bottom: 10px;">Thursday - Vegetable Stir Fry</h3>
+                    <p>🛒 Shopping: Mixed vegetables, soy sauce, rice</p>
+                    <p>⏱️ Prep time: 20 minutes</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px;">
+                    <h3 style="margin-bottom: 10px;">Friday - Pizza Night</h3>
+                    <p>🛒 Shopping: Pizza bases, cheese, toppings</p>
+                    <p>⏱️ Prep time: 15 minutes</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px;">
+                    <h3 style="margin-bottom: 10px;">Saturday - Roast Dinner</h3>
+                    <p>🛒 Shopping: Roast meat, vegetables, Yorkshire pudding mix</p>
+                    <p>⏱️ Prep time: 2 hours</p>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px;">
+                    <h3 style="margin-bottom: 10px;">Sunday - Leftover Buffet</h3>
+                    <p>🛒 Use up leftovers from the week</p>
+                    <p>⏱️ Prep time: 10 minutes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Update time and date
         function updateTime() {
@@ -275,38 +446,75 @@
             const timeString = now.toLocaleTimeString('en-GB', { 
                 hour: '2-digit', 
                 minute: '2-digit',
-                hour12: false 
+                hour12: false,
+                timeZone: 'Europe/London'
             });
             const dateString = now.toLocaleDateString('en-GB', { 
                 weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 
-                day: 'numeric' 
+                day: 'numeric',
+                timeZone: 'Europe/London'
             });
             
             document.getElementById('current-time').textContent = timeString;
             document.getElementById('current-date').textContent = dateString;
         }
 
-        // Bin collection rotation (example logic)
+        // Bin collection rotation (every Friday: recycling, every other Friday: +general waste)
         function updateBinDay() {
-            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            const binTypes = ['General Waste', 'Recycling', 'Garden Waste'];
-            const today = new Date().getDay();
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 = Sunday, 5 = Friday
             const binDay = document.getElementById('bin-day');
             
-            // Simple example: bins collected on Wednesdays, rotate type each week
-            if (today === 2) { // Tuesday
-                const weekNumber = Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 7));
-                const binType = binTypes[weekNumber % binTypes.length];
-                binDay.textContent = `Tomorrow - ${binType}`;
-                binDay.parentElement.parentElement.style.background = 'rgba(255, 165, 0, 0.3)'; // Orange highlight
-            } else if (today === 3) { // Wednesday
-                binDay.textContent = 'Today - Collection Day!';
-                binDay.parentElement.parentElement.style.background = 'rgba(255, 0, 0, 0.3)'; // Red highlight
+            // Calculate days until Friday
+            let daysUntilFriday;
+            if (dayOfWeek === 5) { // Today is Friday
+                daysUntilFriday = 0;
+            } else if (dayOfWeek === 6) { // Saturday
+                daysUntilFriday = 6;
+            } else { // Sunday to Thursday
+                daysUntilFriday = 5 - dayOfWeek;
+            }
+            
+            // Calculate which week we're in (to determine if it's general waste week)
+            const startOfYear = new Date(today.getFullYear(), 0, 1);
+            const weekNumber = Math.ceil(((today - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+            const isGeneralWasteWeek = weekNumber % 2 === 1; // Odd weeks = general waste + recycling
+            
+            if (dayOfWeek === 5) { // Today is Friday - collection day!
+                if (isGeneralWasteWeek) {
+                    binDay.textContent = 'Today - General Waste + Recycling';
+                    binDay.parentElement.parentElement.style.background = 'rgba(255, 0, 0, 0.3)'; // Red
+                } else {
+                    binDay.textContent = 'Today - Recycling Only';
+                    binDay.parentElement.parentElement.style.background = 'rgba(0, 255, 0, 0.3)'; // Green
+                }
+            } else if (dayOfWeek === 4) { // Thursday - tomorrow is collection
+                if (isGeneralWasteWeek) {
+                    binDay.textContent = 'Tomorrow - General Waste + Recycling';
+                    binDay.parentElement.parentElement.style.background = 'rgba(255, 165, 0, 0.3)'; // Orange
+                } else {
+                    binDay.textContent = 'Tomorrow - Recycling Only';
+                    binDay.parentElement.parentElement.style.background = 'rgba(255, 255, 0, 0.3)'; // Yellow
+                }
             } else {
-                const daysUntilWednesday = (3 - today + 7) % 7 || 7;
-                binDay.textContent = `In ${daysUntilWednesday} days - General Waste`;
+                // Show next collection info
+                const nextFriday = new Date(today);
+                nextFriday.setDate(today.getDate() + daysUntilFriday);
+                const nextWeekNumber = Math.ceil(((nextFriday - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+                const nextIsGeneralWaste = nextWeekNumber % 2 === 1;
+                
+                if (daysUntilFriday === 1) {
+                    binDay.textContent = nextIsGeneralWaste ? 
+                        'Tomorrow - General Waste + Recycling' : 
+                        'Tomorrow - Recycling Only';
+                } else {
+                    binDay.textContent = nextIsGeneralWaste ? 
+                        `In ${daysUntilFriday} days - General Waste + Recycling` : 
+                        `In ${daysUntilFriday} days - Recycling Only`;
+                }
+                binDay.parentElement.parentElement.style.background = 'rgba(255, 255, 255, 0.1)'; // Default
             }
         }
 
@@ -317,7 +525,84 @@
             weather.textContent = '18°C, Partly Cloudy';
         }
 
-        // Meal plan for today
+        // Meal plan from Google Sheets
+        async function updateMealsFromGoogleSheets() {
+            // Replace 'YOUR_SHEET_ID' with your actual Google Sheet ID
+            const SHEET_ID = 'YOUR_SHEET_ID';
+            const RANGE = 'Sheet1!A:B'; // Assumes Date in column A, Dinner in column B
+            const API_KEY = 'YOUR_GOOGLE_SHEETS_API_KEY';
+            
+            try {
+                const response = await fetch(
+                    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`
+                );
+                const data = await response.json();
+                
+                if (data.values) {
+                    updateMealPlanFromData(data.values);
+                    updateTodayMealFromData(data.values);
+                }
+            } catch (error) {
+                console.error('Error fetching meal data:', error);
+                // Fallback to static meal plan
+                updateTodayMeal();
+            }
+        }
+
+        function updateMealPlanFromData(sheetData) {
+            const mealPlanContainer = document.getElementById('meal-plan');
+            const today = new Date();
+            
+            // Clear existing content
+            mealPlanContainer.innerHTML = '';
+            
+            // Skip header row, process data
+            for (let i = 1; i < Math.min(sheetData.length, 8); i++) {
+                const [dateStr, dinner] = sheetData[i];
+                if (dateStr && dinner) {
+                    const mealDate = new Date(dateStr);
+                    const dayName = mealDate.toLocaleDateString('en-GB', { weekday: 'long' });
+                    const dateFormatted = mealDate.toLocaleDateString('en-GB', { 
+                        month: 'short', 
+                        day: 'numeric' 
+                    });
+                    
+                    const mealDiv = document.createElement('div');
+                    mealDiv.className = 'meal-day';
+                    
+                    // Highlight today's meal
+                    if (mealDate.toDateString() === today.toDateString()) {
+                        mealDiv.style.background = 'rgba(255, 255, 0, 0.3)';
+                        mealDiv.style.border = '2px solid rgba(255, 255, 255, 0.5)';
+                    }
+                    
+                    mealDiv.innerHTML = `<strong>${dayName} (${dateFormatted}):</strong> ${dinner}`;
+                    mealPlanContainer.appendChild(mealDiv);
+                }
+            }
+        }
+
+        function updateTodayMealFromData(sheetData) {
+            const todayMeal = document.getElementById('today-meal');
+            const today = new Date();
+            
+            // Find today's meal in the sheet data
+            for (let i = 1; i < sheetData.length; i++) {
+                const [dateStr, dinner] = sheetData[i];
+                if (dateStr) {
+                    const mealDate = new Date(dateStr);
+                    if (mealDate.toDateString() === today.toDateString()) {
+                        todayMeal.textContent = dinner;
+                        return;
+                    }
+                }
+            }
+            
+            // If no meal found for today, show next available meal
+            todayMeal.textContent = 'Check meal plan';
+        }
+
+        // Meal plan for today (fallback if Google Sheets fails)
         function updateTodayMeal() {
             const meals = {
                 0: 'Leftover Buffet', // Sunday
@@ -338,11 +623,47 @@
         updateTime();
         updateBinDay();
         updateWeather();
-        updateTodayMeal();
+        
+        // Try to load meals from Google Sheets, fallback to static if it fails
+        updateMealsFromGoogleSheets();
         
         setInterval(updateTime, 1000); // Update every second
         setInterval(updateBinDay, 3600000); // Update every hour
         setInterval(updateWeather, 1800000); // Update every 30 minutes
+        setInterval(updateMealsFromGoogleSheets, 3600000); // Update meals every hour
+
+        // Full screen functionality
+        function openFullscreen(type) {
+            const overlay = document.getElementById(`fullscreen-${type}`);
+            overlay.classList.add('active');
+            
+            // Prevent body scrolling
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFullscreen() {
+            const overlays = document.querySelectorAll('.fullscreen-overlay');
+            overlays.forEach(overlay => overlay.classList.remove('active'));
+            
+            // Restore body scrolling
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close fullscreen on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeFullscreen();
+            }
+        });
+
+        // Close fullscreen when clicking outside content
+        document.querySelectorAll('.fullscreen-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(event) {
+                if (event.target === overlay) {
+                    closeFullscreen();
+                }
+            });
+        });
     </script>
 </body>
 </html>
